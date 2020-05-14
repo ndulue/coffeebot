@@ -1,3 +1,5 @@
+import smtplib
+
 # creates a function that displays information when a user doesn't select any of the given options
 def print_message():
     print("I'm sorry, I did not understand your selection. Please enter the corresponding letter for your response.")
@@ -19,7 +21,7 @@ def get_size():
         else:
             print_message()
 
-# create a function to get the type of drink the user wants 
+# create a function to get the type of drink the user wants
 def get_drink_type():
     while True:
         res = input("What type of drink would you like?  \n[a] Brewed coffee \n[b] Mocha \n[c] Latte \n>")
@@ -31,7 +33,7 @@ def get_drink_type():
             return order_latte()
         else:
             print_message()
-        
+
 
 # if the user selects latte, then we will direct them to this function that inquiries about what type of milk they want added!
 def order_latte():
@@ -45,7 +47,7 @@ def order_latte():
             return "soy latte"
         else:
             print_message()
-        
+
 
 def type_of_cup():
     while True:
@@ -80,7 +82,7 @@ def get_donation_amount():
             print_message()
 
 def get_tip_amount():
-    while True: 
+    while True:
         res = input("How much would you like to tip? \n[a] $1 \n[b] $2 \n[c] $5 \n>")
         if res == "a":
             return 1
@@ -169,7 +171,7 @@ def coffee_bot():
     # This is where the bot makes the introduction and summarizes the order
     print("Welcome to the cafe!")
     print("Can I take your order?")
-    # we set the user responses to variables that we can use for when we summarize the order 
+    # we set the user responses to variables that we can use for when we summarize the order
     size = get_size()
     drink_type = get_drink_type()
     cup = type_of_cup()
@@ -188,9 +190,37 @@ def coffee_bot():
     print(f"Did you choose a pastry?: {pastry}")
     print(f"Your total is: ${total}")
     print(f"Thanks, {name}! Your drink will be ready shortly.")
-    
+#custom message our chatbot sends to our email
+    custom_text = ("""We have a new Order from: {},\nCoffee size of: {},\nDrink type of: {},\nChoice of cup is: {},\nDrink served: {},\nTheir order is set to: {},\nDonation choice is: ${},\nPreferred payment method is: {},\nChoice of pastry is: {}.\n\n
+The total is ${}
+    """).format(name, size, drink_type, cup, temp, order, donation_choice, payment, pastry, total)
+
+#enter the sender's mgail, sender's password and receiver gmail also remember to "select allow less secured app in the sender's gmail account security settings
+    send_email('iamemekandulue@gmail.com','','devng44@gmail.com', 'A new coffee order', custom_text)
+
+#Send an email to our email address after taking the order
+
+def send_email(user, pwd, recipient, subject, body):
+    import smtplib
+
+    FROM = user
+    TO = recipient
+    SUBJECT = subject
+    TEXT = body
+
+    # Prepare actual message
+    message = """From: %s\nTo: %s\nSubject: %s\n\n%s
+    """ % (FROM, TO, SUBJECT, TEXT)
+    try:
+        server = smtplib.SMTP("smtp.gmail.com", 587)
+        server.ehlo()
+        server.starttls()
+        server.login(user, pwd)
+        server.sendmail(FROM, TO, message)
+        server.close()
+        print ('successfully sent the mail')
+    except:
+        print ("failed to send mail")
+
 
 coffee_bot()
-
-
- 
